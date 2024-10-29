@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+#sudo apt install qtbase5-dev
+#sudo apt install git build-essential cmake libudev-dev zlib1g-dev libappindicator-dev libpulse-dev libquazip5-dev
+
 # We want to see the logs in English
 if [[ -z "$LC_ALL" && -z "$LANG" ]]; then
 	echo "* Weird, neither LC_ALL nor LANG is set:"
@@ -48,7 +51,8 @@ fi
 
 rm -rf build
 
-cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DSAFE_INSTALL=ON -DSAFE_UNINSTALL=ON
+cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DSAFE_INSTALL=ON -DSAFE_UNINSTALL=ON -DUSE_XCB=0 -DUSE_DBUS_MENU=0
+
 checkfail $?
 
 # Find out how many cores the system has, for make
