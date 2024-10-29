@@ -1,10 +1,6 @@
 #include <cmath>
-
-#include <QtGlobal>
 #include <QPainter>
 #include <QPropertyAnimation>
-#include <QVector>
-
 #include "gradientdialogwidget.h"
 
 GradientDialogWidget::GradientDialogWidget(QWidget *parent) :
@@ -224,12 +220,7 @@ void GradientDialogWidget::paintEvent(QPaintEvent*){
 }
 
 void GradientDialogWidget::mousePressEvent(QMouseEvent* event){
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    int x = event->position().x(), y = event->position().y();
-#else
     int x = event->x(), y = event->y();
-#endif
-
     if(y < height() - 24)
         return;
     QMapIterator<int, QColor> i(_colors);
@@ -262,13 +253,8 @@ void GradientDialogWidget::mousePressEvent(QMouseEvent* event){
 }
 
 void GradientDialogWidget::mouseMoveEvent(QMouseEvent* event){
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QPoint evtpos(event->x(), event->y());
-#else
-    QPoint evtpos = event->position().toPoint();
-#endif
     if(!selected.isValid()){
-        if(evtpos.y() >= height() - 24)
+        if(event->y() >= height() - 24)
             setCursor(QCursor(Qt::PointingHandCursor));
         else
             setCursor(QCursor(Qt::ArrowCursor));
@@ -276,7 +262,7 @@ void GradientDialogWidget::mouseMoveEvent(QMouseEvent* event){
     }
     // Move selected point (if any)
     setCursor(QCursor(Qt::ClosedHandCursor));
-    selectedPos = evtpos.x() + selectedOffset;
+    selectedPos = event->x() + selectedOffset;
     // Allow the point to be deleted as long as there is at least 1 other point
     bool last = (_colors.count() == 0);
     // Hug the left/right edges
@@ -288,7 +274,7 @@ void GradientDialogWidget::mouseMoveEvent(QMouseEvent* event){
         selectedPos = right;
     // Remove point if it's too far above/below the widget
     int top = -30, bottom = height() + 30;
-    if(!last && (evtpos.y() < top || evtpos.y() > bottom))
+    if(!last && (event->y() < top || event->y() > bottom))
         selectedPos = -1;
     makeStops();
 }
@@ -303,13 +289,7 @@ void GradientDialogWidget::mouseReleaseEvent(QMouseEvent* event){
         selected = QColor();
         makeStops();
     }
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    const int y = event->y();
-#else
-    const int y = event->position().y();
-#endif
-    if(y >= height() - 24)
+    if(event->y() >= height() - 24)
         setCursor(QCursor(Qt::PointingHandCursor));
     else
         setCursor(QCursor(Qt::ArrowCursor));

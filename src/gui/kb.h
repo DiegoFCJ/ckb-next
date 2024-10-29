@@ -1,21 +1,15 @@
 #ifndef KB_H
 #define KB_H
 
-#include <QtGlobal>
 #include <QObject>
 #include <QFile>
 #include <QThread>
 #include <QTimer>
-
 #include "kbprofile.h"
 #include <QElapsedTimer>
 #include <limits>
 #include "batterysystemtrayicon.h"
 #include "ckbversionnumber.h"
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <QStringView>
-#endif
 
 struct firmware_t {
     CkbVersionNumber app;
@@ -23,15 +17,8 @@ struct firmware_t {
     CkbVersionNumber radioapp;
     CkbVersionNumber radiobld;
     void parse(const QString& str){
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        QStringView view(str);
-        view.truncate(view.size() - 1);
         // KeepEmptyParts is the default
-        QList<QStringView> split = view.split(QChar('\n'));
-#else
-        // KeepEmptyParts is the default
-        QVector<QStringRef> split = str.leftRef(str.size() - 1).split(QChar('\n'));
-#endif
+        QVector<QStringRef> split = str.leftRef(str.size()-1).split(QChar('\n'));
         // Old < 0.5.0 format (NXP and legacy)
         if(split.size() == 1){
             app = CkbVersionNumber(split.at(0).toString());

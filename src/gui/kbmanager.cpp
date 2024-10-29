@@ -212,7 +212,8 @@ void KbManager::scanKeyboards(){
     }
 }
 
-void KbManager::brightnessScroll(QPoint delta){
+void KbManager::brightnessScroll(int delta, Qt::Orientation orientation){
+    const bool up = delta > 0;
     int dimming = KbLight::shareDimming();
 
     // Only run this if shared dimming is enabled
@@ -223,7 +224,7 @@ void KbManager::brightnessScroll(QPoint delta){
     if(_devices.empty() || i == _devices.end())
         return;
 
-    dimming += (delta.ry() > 0 ? -1 : 1);
+    dimming += (up ? -1 : 1);
 
     if(dimming < 0)
         dimming = 0;

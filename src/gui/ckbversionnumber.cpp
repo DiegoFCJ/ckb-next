@@ -1,8 +1,5 @@
 #include "ckbversionnumber.h"
 
-#include <QtGlobal>
-#include <QObject>
-
 static inline bool isAsciiDigitString(const QString& str){
     for(const QChar& c : str)
         if(c < '0' || c > '9')
@@ -48,12 +45,7 @@ CkbVersionNumber::CkbVersionNumber(const QString& vstr) : ckbTooOld(false) {
         ver = QVersionNumber(FWBcdToBin(usver[1]), FWBcdToBin(usver[0]));
         return;
     }
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     int i;
-#else
-    qsizetype i;
-#endif
-
     ver = QVersionNumber::fromString(vstr, &i);
     if(!ver.isNull())
         suffix = vstr.mid(i);
